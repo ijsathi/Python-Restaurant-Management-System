@@ -20,10 +20,8 @@ class Admin(User):
     def add_employee(self, restaurent, employee):
         restaurent.add_employee(employee)
     
-    def view_employee(self):
-        print("Employee List!!")
-        for emp in self.employees:
-            print(emp.name, emp.email, emp.phone, emp.address, emp.salary)
+    def view_employee(self, restaurent):
+        restaurent.view_employee()
 
 class Restaurent:
     def __init__(self, name):
@@ -32,6 +30,33 @@ class Restaurent:
 
     def add_employee(self, employee):
         self.employees.append(employee)
+
+    def view_employee(self):
+        print("Employee List!!")
+        for emp in self.employees:
+            print(emp.name, emp.email, emp.phone, emp.address, emp.salary)
+
+class Menu:
+    def __init__(self):
+        self.items = [] # Its Item DB
+    
+    def add_menu_item(self, item):
+        self.items.append(item)
+    
+    def find_item(self, item_name):
+        for item in self.items:
+            if item.name.lower() == item_name.lower():
+                return item
+        return None
+    
+    def remove_item(self, item_name):
+        item = self.find_item(item_name)
+        if item:
+            self.items.remove(item)
+            print("Item Deleted!!")
+        else:
+            print("Item Not Found!!")
+
 
 ad = Admin('karim', 1234, 'k@gmail.com', 'dhaka')
 ad.add_employee('hahim', 9874, 'h@gmail.com', 'dhaka', 34, 'IT', 34000)
