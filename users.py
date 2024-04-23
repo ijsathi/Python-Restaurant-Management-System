@@ -9,21 +9,46 @@ class User(ABC):
 class Customer(User):
     def __init__(self, name, phone, email, address):
         super().__init__(name, phone, email, address)
-        self.cart = None
+        self.cart = Order()
 
     def view_menu(self, restaurent):
         restaurent.menu.show_menu()
 
-    def add_to_cart(self, restaurent, item_name):
+    def add_to_cart(self, restaurent, item_name, quantity):
         item = restaurent.menu.find_item(item_name)
         if item:
-            pass
+            item.quantity = quantity
+            self.cart.add_item(item)
+            print("Item Added!!")
         else:
             print("Item Not Found!!")
     
     def view_cart(self):
         print("***View Cart***")
         print("Name\tPrice\tQuantity")
+        for item, quantity in self.cart.items.items():
+            print(f"{item.name}\t{item.price}\t{quantity}")
+        print("Total Price: {self.cart.total_price}")
+
+class Order:
+    def __init__(self) -> None:
+        self.items = {} #eta dictionary
+
+    def add_item(self, item):
+        if item in self.items:
+            self.items[item] += item.quantity # jodi cart e already thaake
+        else:
+            self.items[item] = item.quantity # cart e na thakle
+    
+    def remove(self, item):
+        if item in self.items:
+            del self.items[item]
+
+    def total_price(self):
+        return sum(item.price * quantity for item, quantity in self.items.items())
+    
+    def clear(self):
+        self.items = {}
 class Employee(User):
     def __init__(self, name, phone, email, address, age, designation, salary):
         super().__init__(name, phone, email, address)
