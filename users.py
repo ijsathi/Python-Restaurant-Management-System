@@ -17,9 +17,12 @@ class Customer(User):
     def add_to_cart(self, restaurent, item_name, quantity):
         item = restaurent.menu.find_item(item_name)
         if item:
-            item.quantity = quantity
-            self.cart.add_item(item)
-            print("Item Added!!")
+            if quantity > item.quantity:
+                print("Item quantity exceeded!!")
+            else:
+                item.quantity = quantity
+                self.cart.add_item(item)
+                print("Item Added!!")
         else:
             print("Item Not Found!!")
     
@@ -28,7 +31,7 @@ class Customer(User):
         print("Name\tPrice\tQuantity")
         for item, quantity in self.cart.items.items():
             print(f"{item.name}\t{item.price}\t{quantity}")
-        print("Total Price: {self.cart.total_price}")
+        print(f"Total Price: {self.cart.total_price}")
 
 class Order:
     def __init__(self) -> None:
@@ -44,6 +47,7 @@ class Order:
         if item in self.items:
             del self.items[item]
 
+    @property
     def total_price(self):
         return sum(item.price * quantity for item, quantity in self.items.items())
     
@@ -76,7 +80,7 @@ class Restaurent:
     def __init__(self, name):
         self.name = name
         self.employees = [] # Its our Database
-        self.menu = FoodItem()
+        self.menu = Menu()
 
     def add_employee(self, employee):
         self.employees.append(employee)
@@ -118,11 +122,32 @@ class FoodItem:
         self.name = name
         self.price = price
         self.quantity = quantity
+rsturnt = Restaurent("Khai dai ghumai")
 
 mn = Menu()
 item = FoodItem("Pizza", 299, 15)
-mn.add_menu_item(item)
-mn.show_menu()
+item2 = FoodItem("Burger", 210, 45)
+item3 = FoodItem("Momos", 120, 10)
+item4 = FoodItem("Khacchi", 350, 15)
+
+admin = Admin("Israt Zahan", 1766548835, "israt@gmail.com", "Dhaka")
+admin.add_new_item(rsturnt, item)
+admin.add_new_item(rsturnt, item2)
+admin.add_new_item(rsturnt, item3)
+admin.add_new_item(rsturnt, item4)
+# mn.show_menu()
+
+cstmr = Customer("Israt Zahan", 1766548835, "israt@gmail.com", "Dhaka")
+cstmr.view_menu(rsturnt)
+
+item_name = input("Enter item name: ")
+item_quantity = int(input("Enter item quantity: "))
+
+
+cstmr.add_to_cart(rsturnt, item_name, item_quantity)
+cstmr.view_cart()
+
+
 
 # ad = Admin('karim', 1234, 'k@gmail.com', 'dhaka')
 # ad.add_employee('hahim', 9874, 'h@gmail.com', 'dhaka', 34, 'IT', 34000)
